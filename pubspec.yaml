@@ -24,6 +24,7 @@ dependencies:
   equatable: ^2.0.7
   fluttertoast: ^8.2.10
   gap: ^3.0.1
+  get_it: ^8.0.3
 
 dev_dependencies:
   flutter_test:

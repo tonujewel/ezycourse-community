@@ -5,9 +5,11 @@ import 'package:gap/gap.dart';
 import '../../../../core/utils/color_manager.dart';
 import '../../../../core/widgets/password_text_field.dart';
 import '../../../../core/widgets/primary_text_field.dart';
+import '../../data/models/login_request.dart';
+import '../providers/login_provider.dart';
 
-class LoginScreens extends ConsumerWidget {
-  const LoginScreens({super.key});
+class LoginScreen extends ConsumerWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +25,10 @@ class LoginScreens extends ConsumerWidget {
         child: const Stack(
           children: [
             LoginTopSection(),
-            Align(alignment: Alignment.bottomCenter, child: LoginBottomSection()),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: LoginBottomSection(),
+            ),
           ],
         ),
       ),
@@ -50,13 +55,15 @@ class LoginTopSection extends StatelessWidget {
   }
 }
 
-class LoginBottomSection extends StatelessWidget {
+class LoginBottomSection extends ConsumerWidget {
   const LoginBottomSection({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(loginProvider);
+
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -127,14 +134,19 @@ class LoginBottomSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () {},
-                child: const Text(
-                  'Login',
-                  style: TextStyle(
-                    color: ColorManager.primaryColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                onPressed: () {
+                  LoginRequest request = const LoginRequest(email: "stu@test.io", password: "123456", appToken: " ");
+                  ref.read(loginProvider.notifier).login(request);
+                },
+                child: state.isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text(
+                        'Login',
+                        style: TextStyle(
+                          color: ColorManager.primaryColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
               ),
               const Gap(32),
             ],
