@@ -4,21 +4,22 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:ezycourse_community/core/utils/shared_preference_utils.dart';
 
 class DioClient {
   static const int timeoutDuration = 60;
 
   final Dio _dio = Dio();
 
-// _dio.
-
-  Map<String, dynamic>? header = {'Accept': 'application/json', 'Content-Type': 'application/json'};
+  Map<String, dynamic>? header = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${SharedPrefUtil.instance.getBearerToken()}',
+  };
 
   //GET
-
   Future<dynamic> get({
     required String url,
-    Map<String, dynamic>? header,
     Map<String, dynamic>? params,
   }) async {
     try {

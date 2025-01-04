@@ -28,8 +28,8 @@ class LoginRemoteDatasourcesImpl implements LoginRemoteDatasources {
     } on ApiException {
       rethrow;
     } on DioException catch (error) {
-      var dd = DioExceptionHandler.handleException(error);
-      throw ApiException(message: dd.message, statusCode: dd.statusCode);
+      var errorData = DioExceptionHandler.handleException(error);
+      throw ApiException(message: errorData.message, statusCode: errorData.statusCode);
     } catch (e) {
       throw ApiException(message: e.toString(), statusCode: 505);
     }

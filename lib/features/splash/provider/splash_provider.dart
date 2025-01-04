@@ -1,9 +1,9 @@
-import 'package:ezycourse_community/core/utils/shared_preference_utils.dart';
-import 'package:ezycourse_community/features/feed_screen/presentation/screens/feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/shared_preference_utils.dart';
 import '../../authentication/presentation/screens/login_screen.dart';
+import '../../feed_screen/presentation/screens/feed_screen.dart';
 
 splashProvider(BuildContext context) => FutureProvider(
       (ref) async {

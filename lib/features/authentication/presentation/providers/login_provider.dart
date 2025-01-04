@@ -1,9 +1,9 @@
-import 'package:ezycourse_community/core/utils/app_utils.dart';
-import 'package:ezycourse_community/core/utils/shared_preference_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../../core/utils/app_utils.dart';
 import '../../../../core/utils/custom_toast.dart';
+import '../../../../core/utils/shared_preference_utils.dart';
 import '../../data/models/login_request.dart';
 import '../../domain/usecases/login_usecases.dart';
 

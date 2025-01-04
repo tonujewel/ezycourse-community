@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:ezycourse_community/core/utils/app_utils.dart';
+import 'package:ezycourse_community/features/feed_screen/presentation/screens/feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -59,13 +62,21 @@ class LoginTopSection extends StatelessWidget {
 class LoginBottomSection extends ConsumerWidget {
   LoginBottomSection({super.key});
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController =
+      TextEditingController(text: "soniamalik@gmail.com"); // TODO need to remove when release
+  final TextEditingController passwordController = TextEditingController(text: "7654321");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(loginProvider);
 
+    ref.listen<LoginState>(loginProvider, (LoginState? previous, LoginState next) {
+      log("listen previousCount ${previous?.isSuccess} newCount ${next.isSuccess}");
+
+      if (next.isSuccess) {
+        Navigator.push(context, MaterialPageRoute(builder: (c) => const FeedScreen()));
+      }
+    });
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -143,7 +154,7 @@ class LoginBottomSection extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         AppUtils.hideKeyboard();
                         LoginRequest request = LoginRequest(
                             email: emailController.text.trim(),
