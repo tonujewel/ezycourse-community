@@ -1,3 +1,4 @@
+import 'package:ezycourse_community/core/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -22,9 +23,9 @@ class LoginScreen extends ConsumerWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: const Stack(
+        child: Stack(
           children: [
-            LoginTopSection(),
+            const LoginTopSection(),
             Align(
               alignment: Alignment.bottomCenter,
               child: LoginBottomSection(),
@@ -56,9 +57,10 @@ class LoginTopSection extends StatelessWidget {
 }
 
 class LoginBottomSection extends ConsumerWidget {
-  const LoginBottomSection({
-    super.key,
-  });
+  LoginBottomSection({super.key});
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,19 +92,21 @@ class LoginBottomSection extends ConsumerWidget {
               const Gap(20),
               const Text(
                 'Sign In',
-                textAlign: TextAlign.left,
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: 'Figtree',
                   fontSize: 30,
-                  letterSpacing: 0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const Gap(20),
-              const PrimaryTextField(hint: "Email", label: "Email"),
+              PrimaryTextField(
+                hint: "Email",
+                label: "Email",
+                controller: emailController,
+                textInputType: TextInputType.emailAddress,
+              ),
               const Gap(18),
-              const PasswordTextField(),
+              PasswordTextField(controller: passwordController),
               const Gap(16),
               Row(
                 children: [
@@ -111,10 +115,13 @@ class LoginBottomSection extends ConsumerWidget {
                     width: 24.0,
                     child: Checkbox(
                       side: const BorderSide(color: Colors.white),
-                      value: true,
-                      onChanged: (val) {},
+                      value: state.isRemember,
+                      onChanged: (val) {
+                        ref.read(loginProvider.notifier).isRememberOnTap(val ?? false);
+                      },
                       checkColor: Colors.black,
-                      fillColor: WidgetStateProperty.all(Colors.white),
+                      tristate: true,
+                      activeColor: Colors.white,
                     ),
                   ),
                   const Gap(10),
@@ -126,28 +133,32 @@ class LoginBottomSection extends ConsumerWidget {
                 ],
               ),
               const Gap(32),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  backgroundColor: ColorManager.btnColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () {
-                  LoginRequest request = const LoginRequest(email: "stu@test.io", password: "123456", appToken: " ");
-                  ref.read(loginProvider.notifier).login(request);
-                },
-                child: state.isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text(
+              state.isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        backgroundColor: ColorManager.btnColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        AppUtils.hideKeyboard();
+                        LoginRequest request = LoginRequest(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                            appToken: " ");
+                        ref.read(loginProvider.notifier).login(request);
+                      },
+                      child: const Text(
                         'Login',
                         style: TextStyle(
                           color: ColorManager.primaryColor,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-              ),
+                    ),
               const Gap(32),
             ],
           ),

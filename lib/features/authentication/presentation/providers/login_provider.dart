@@ -1,23 +1,31 @@
-import 'dart:developer';
-
+import 'package:ezycourse_community/core/utils/app_utils.dart';
+import 'package:ezycourse_community/core/utils/shared_preference_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../../core/utils/custom_toast.dart';
 import '../../data/models/login_request.dart';
 import '../../domain/usecases/login_usecases.dart';
 
 class LoginState {
   final bool isLoading;
   final bool isSuccess;
+  final bool isRemember;
   final String? error;
 
-  LoginState({this.isLoading = false, this.isSuccess = false, this.error});
+  LoginState({
+    this.isLoading = false,
+    this.isSuccess = false,
+    this.error,
+    this.isRemember = true,
+  });
 
-  LoginState copyWith({bool? isLoading, bool? isSuccess, String? error}) {
+  LoginState copyWith({bool? isLoading, bool? isSuccess, String? error, bool? isRemember}) {
     return LoginState(
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       error: error ?? this.error,
+      isRemember: isRemember ?? this.isRemember,
     );
   }
 }
@@ -28,23 +36,46 @@ class LoginNotifier extends StateNotifier<LoginState> {
   LoginNotifier(this.loginUseCase) : super(LoginState());
 
   Future<void> login(LoginRequest request) async {
+    if (!loginValidation(request)) {
+      return;
+    }
+
     state = state.copyWith(isLoading: true);
-    // try {
     final response = await loginUseCase.call(request);
     response.fold(
       (l) {
-        log("message ${l.message} ${l.statusCode}");
         state = state.copyWith(isLoading: false, isSuccess: false, error: l.message);
+        CustomToast.errorToast(message: l.message);
       },
       (r) {
-        log("message ${r.token}");
-
+        CustomToast.successToast(message: "Login Success");
         state = state.copyWith(isLoading: false, isSuccess: true);
+        SharedPrefUtil.instance.storeIsRemember(state.isRemember);
+        SharedPrefUtil.instance.storeBearerToken(r.token);
       },
     );
-    // } catch (e) {
-    //   state = state.copyWith(isLoading: false, error: e.toString());
-    // }
+  }
+
+  bool loginValidation(LoginRequest request) {
+    if (request.email.isEmpty) {
+      CustomToast.errorToast(message: "Email required");
+      return false;
+    }
+    if (!AppUtils.validateEmail(request.email)) {
+      CustomToast.errorToast(message: "Invalid Email required");
+      return false;
+    }
+
+    if (request.password.isEmpty) {
+      CustomToast.errorToast(message: "Password required");
+      return false;
+    }
+
+    return true;
+  }
+
+  void isRememberOnTap(bool value) {
+    state = state.copyWith(isRemember: value);
   }
 }
 

@@ -24,7 +24,6 @@ class PrimaryTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          textAlign: TextAlign.left,
           style: const TextStyle(color: Color(0xFF84AAB5)),
         ),
         const Gap(10),
@@ -32,6 +31,7 @@ class PrimaryTextField extends StatelessWidget {
           controller: controller,
           keyboardType: textInputType,
           onChanged: onChanged,
+          style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),

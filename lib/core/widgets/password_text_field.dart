@@ -27,13 +27,13 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       children: [
         const Text(
           "Password",
-          textAlign: TextAlign.left,
           style: TextStyle(color: Color(0xFF84AAB5)),
         ),
         const Gap(10),
         TextField(
           obscureText: hidePassword,
           controller: widget.controller,
+          style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: widget.hints ?? "Password",
             suffixIcon: IconButton(

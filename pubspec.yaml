@@ -25,6 +25,8 @@ dependencies:
   fluttertoast: ^8.2.10
   gap: ^3.0.1
   get_it: ^8.0.3
+  shared_preferences: ^2.3.5
+  flutter_svg: ^2.0.16
 
 dev_dependencies:
   flutter_test:
@@ -43,6 +45,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/fonts/
+    - assets/svgs/
 
   
   fonts:
