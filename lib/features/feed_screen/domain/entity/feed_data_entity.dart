@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-
 class FeedDataEntity extends Equatable {
   final int id;
   final int schoolId;
@@ -85,7 +84,7 @@ class FeedDataEntity extends Equatable {
   // LinearGradient getGradiantCOlor() {
 
   //  for (var data in AppConstant.gradientsColor) {
-     
+
   //  }
   // }
 }
@@ -122,7 +121,7 @@ class LikeTypeEntity extends Equatable {
   List<Object?> get props => [reactionType, feedId];
 
   String getStatusImg() {
-    switch (reactionType) {
+    switch (reactionType.toUpperCase()) {
       case "LIKE":
         return "assets/images/like.png";
       case "LOVE":

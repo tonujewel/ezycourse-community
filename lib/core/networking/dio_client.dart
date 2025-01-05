@@ -33,7 +33,7 @@ class DioClient {
           .timeout(const Duration(seconds: timeoutDuration));
       printResponse(url, "${header ?? ""}", "", "$response");
 
-      return response.data;
+      return jsonEncode(response.data);
     } catch (e) {
       printResponse(url, "${header ?? ""}", '', "$e");
       rethrow;

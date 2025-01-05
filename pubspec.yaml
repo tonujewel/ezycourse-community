@@ -39,10 +39,10 @@ flutter:
   # ASSETS
   assets:
     - assets/
-    - assets/images/reaction/
     - assets/images/
     - assets/fonts/
     - assets/svgs/
+    - assets/images/reaction/
 
   # FONTS
   fonts:
