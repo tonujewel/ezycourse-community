@@ -17,7 +17,7 @@ class CreatePostDataSourceImpl implements CreatePostDatasources {
   final DioClient dioClient;
 
   CreatePostDataSourceImpl({required this.dioClient});
-  
+
   @override
   Future<String> createPost(CreatePostReq req) async {
     Map<String, dynamic>? header = {
@@ -27,7 +27,7 @@ class CreatePostDataSourceImpl implements CreatePostDatasources {
     };
 
     try {
-      final result = await dioClient.post(url: UrlManager.createPostUrl, body: req.toJson(), head: header);
+      final result = await dioClient.post(url: UrlManager.createPostUrl, body: req.toJson(), header: header);
       log("result $result");
       return "Post successfully created";
     } on ApiException {

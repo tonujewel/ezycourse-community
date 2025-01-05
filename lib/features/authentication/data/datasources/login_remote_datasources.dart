@@ -21,17 +21,15 @@ class LoginRemoteDatasourcesImpl implements LoginRemoteDatasources {
 
   LoginRemoteDatasourcesImpl({required this.client});
 
-
-
   @override
   Future<LoginModel> login(LoginRequest request) async {
-     Map<String, dynamic>? header = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
-  };
+    Map<String, dynamic>? header = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
+    };
     try {
-      final result = await client.post(url: UrlManager.loginUrl, body: request.toJson(),head: header);
+      final result = await client.post(url: UrlManager.loginUrl, body: request.toJson(), header: header);
 
       final res = LoginModel.fromJson(json.decode(result));
       return res;
@@ -47,14 +45,14 @@ class LoginRemoteDatasourcesImpl implements LoginRemoteDatasources {
 
   @override
   Future<LogoutModel> logout() async {
-     Map<String, dynamic>? header = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
-  };
-  
+    Map<String, dynamic>? header = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
+    };
+
     try {
-      final result = await client.post(url: UrlManager.logoutUrl,head: header);
+      final result = await client.post(url: UrlManager.logoutUrl, header: header);
 
       final res = LogoutModel.fromJson(json.decode(result));
       return res;

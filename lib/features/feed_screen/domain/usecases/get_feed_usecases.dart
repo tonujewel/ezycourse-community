@@ -9,7 +9,7 @@ class GetFeedUsecases {
 
   GetFeedUsecases({required this.repository});
 
-  Future<Either<Failure, List<FeedDataEntity>>> call() async {
-    return await repository.getFeed();
+  Future<Either<Failure, List<FeedDataEntity>>> call(String? lastId) async {
+    return await repository.getFeed(lastId);
   }
 }

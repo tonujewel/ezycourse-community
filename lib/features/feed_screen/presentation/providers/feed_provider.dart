@@ -81,7 +81,7 @@ class FeedNotifier extends StateNotifier<FeedState> {
   Future<void> getFeeds() async {
     log("fetching data");
     state = state.copyWith(isLoading: true);
-    final response = await feedUsecases.call();
+    final response = await feedUsecases.call(null);
 
     response.fold(
       (l) {
@@ -90,6 +90,32 @@ class FeedNotifier extends StateNotifier<FeedState> {
       },
       (r) {
         state = state.copyWith(isLoading: false, isSuccess: true, feeds: r);
+      },
+    );
+  }
+
+  Future<void> loadMoreData() async {
+    if (state.isLoading) {
+      log("already feching data");
+      return;
+    }
+    log("fetching data");
+    FeedDataEntity lastFeed = state.feeds.last;
+
+    state = state.copyWith(isLoading: true);
+    final response = await feedUsecases.call(lastFeed.id.toString());
+
+    response.fold(
+      (l) {
+        state = state.copyWith(isLoading: false, isSuccess: false, error: l.message);
+        CustomToast.errorToast(message: l.message);
+      },
+      (r) {
+        List<FeedDataEntity> listData = List.from(state.feeds);
+
+        listData.addAll(r);
+
+        state = state.copyWith(isLoading: false, isSuccess: true, feeds: listData);
       },
     );
   }
@@ -156,7 +182,6 @@ class FeedNotifier extends StateNotifier<FeedState> {
       (r) async {
         await getComments(req.feedId.toString(), false);
         getFeeds();
-        // state = state.copyWith(isCommentsLoading: false);
       },
     );
   }

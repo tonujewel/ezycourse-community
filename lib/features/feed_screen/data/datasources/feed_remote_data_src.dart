@@ -12,7 +12,7 @@ import '../model/feed_data_model.dart';
 import '../model/submit_react_req.dart';
 
 abstract class FeedRemoteDataSrc {
-  Future<List<FeedDataModel>> getFeeds();
+  Future<List<FeedDataModel>> getFeeds(String? lastId);
   Future<String> submitReact(SubmitReactReq req);
 }
 
@@ -22,7 +22,7 @@ class FeedRemoteDataSrcImpl implements FeedRemoteDataSrc {
   FeedRemoteDataSrcImpl({required this.dioClient});
 
   @override
-  Future<List<FeedDataModel>> getFeeds() async {
+  Future<List<FeedDataModel>> getFeeds(String? lastId) async {
     Map<String, dynamic>? header = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -31,10 +31,11 @@ class FeedRemoteDataSrcImpl implements FeedRemoteDataSrc {
     var body = {
       "community_id": 2914,
       "space_id": 5883,
-      // "more": 211542,
+      "more": lastId,
     };
+
     try {
-      final result = await dioClient.post(url: UrlManager.feedUrl, body: body, head: header);
+      final result = await dioClient.post(url: UrlManager.feedUrl, body: body, header: header);
 
       final data = List<FeedDataModel>.from(json.decode(result).map((x) => FeedDataModel.fromJson(x)));
 
@@ -58,7 +59,7 @@ class FeedRemoteDataSrcImpl implements FeedRemoteDataSrc {
     };
 
     try {
-      final result = await dioClient.post(url: UrlManager.createLikeUrl, body: req.toJson(), head: header);
+      final result = await dioClient.post(url: UrlManager.createLikeUrl, body: req.toJson(), header: header);
       log("result $result");
       return "Success";
     } on ApiException {

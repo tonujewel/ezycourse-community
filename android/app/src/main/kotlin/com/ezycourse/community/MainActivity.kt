@@ -1,4 +1,4 @@
-package com.ezycourse.community.ezycourse_community
+package com.ezycourse.community
 
 import io.flutter.embedding.android.FlutterActivity
 

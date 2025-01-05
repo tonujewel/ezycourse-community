@@ -35,7 +35,7 @@ class FeedItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    data.name,
+                    "${data.name} ${data.id}",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16,

@@ -27,8 +27,13 @@ class CommentRemoteDataSrcImpl implements CommentRemoteDataSrc {
 
   @override
   Future<List<CommentsModel>> getComments(String id) async {
+    Map<String, dynamic>? header = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
+    };
     try {
-      final result = await dioClient.get(url: "${UrlManager.getCommentsUrl}$id");
+      final result = await dioClient.get(url: "${UrlManager.getCommentsUrl}$id", header: header);
 
       final data = List<CommentsModel>.from(json.decode(result).map((x) => CommentsModel.fromJson(x)));
 
@@ -45,8 +50,13 @@ class CommentRemoteDataSrcImpl implements CommentRemoteDataSrc {
 
   @override
   Future<List<ReplyDataModel>> getReplies(String id) async {
+    Map<String, dynamic>? header = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
+    };
     try {
-      final result = await dioClient.get(url: "${UrlManager.getRepliesUrl}$id");
+      final result = await dioClient.get(url: "${UrlManager.getRepliesUrl}$id", header: header);
 
       final data = List<ReplyDataModel>.from(json.decode(result).map((x) => ReplyDataModel.fromJson(x)));
 
@@ -70,7 +80,7 @@ class CommentRemoteDataSrcImpl implements CommentRemoteDataSrc {
     };
 
     try {
-      final result = await dioClient.post(url: UrlManager.createCommentsUrl, body: req.toJson(), head: header);
+      final result = await dioClient.post(url: UrlManager.createCommentsUrl, body: req.toJson(), header: header);
 
       log(result.toString());
       return "Comments successfully created";
@@ -83,17 +93,17 @@ class CommentRemoteDataSrcImpl implements CommentRemoteDataSrc {
       throw ApiException(message: e.toString(), statusCode: 505);
     }
   }
-  
+
   @override
-  Future<String> createReply(CreateReplyReq req) async{
-      Map<String, dynamic>? header = {
+  Future<String> createReply(CreateReplyReq req) async {
+    Map<String, dynamic>? header = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
     };
 
     try {
-      final result = await dioClient.post(url: UrlManager.createCommentsUrl, body: req.toJson(), head: header);
+      final result = await dioClient.post(url: UrlManager.createCommentsUrl, body: req.toJson(), header: header);
 
       log(result.toString());
       return "Reply successfully created";

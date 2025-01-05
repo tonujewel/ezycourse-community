@@ -13,9 +13,9 @@ class FeedRepositoryImpl implements FeedRepository {
   FeedRepositoryImpl({required this.dataSrc});
 
   @override
-  Future<Either<Failure, List<FeedDataEntity>>> getFeed() async {
+  Future<Either<Failure, List<FeedDataEntity>>> getFeed(String? lastId) async {
     try {
-      final result = await dataSrc.getFeeds();
+      final result = await dataSrc.getFeeds( lastId);
       return Right(result);
     } on ApiException catch (e) {
       return Left(ApiFailure.fromException(e));

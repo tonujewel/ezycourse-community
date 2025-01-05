@@ -1,8 +1,6 @@
-import 'package:ezycourse_community/core/di/injector_container.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../../../core/networking/dio_client.dart';
 import '../../../../core/utils/app_utils.dart';
 import '../../../../core/utils/custom_toast.dart';
 import '../../../../core/utils/shared_preference_utils.dart';

@@ -62,15 +62,14 @@ class LoginTopSection extends StatelessWidget {
 class LoginBottomSection extends ConsumerWidget {
   LoginBottomSection({super.key});
 
-  final TextEditingController emailController = TextEditingController(text: "soniamalik@gmail.com");
-  final TextEditingController passwordController = TextEditingController(text: "7654321");
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(loginProvider);
 
     ref.listen<LoginState>(loginProvider, (LoginState? previous, LoginState next) {
-      log("listen previousCount ${previous?.isSuccess} newCount ${next.isSuccess}");
 
       if (previous?.isSuccess == false && next.isSuccess) {
         Navigator.pushAndRemoveUntil(

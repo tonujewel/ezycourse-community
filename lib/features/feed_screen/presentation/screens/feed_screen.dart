@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,11 +25,26 @@ class FeedScreen extends ConsumerStatefulWidget {
 class _FeedScreenState extends ConsumerState<FeedScreen> {
   final TextEditingController controller = TextEditingController();
   final FocusNode myFocusNode = FocusNode();
+
+  final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(feedProvider.notifier).getFeeds();
+    });
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        log("message");
+        ref.read(feedProvider.notifier).loadMoreData();
+        // if (SellerProductCategories.currentPage <= SellerProductCategories.lastPage) {
+        //   ref.watch(productCategoriesProvider.notifier).getProductCategories();
+        // } else {
+        //   showToast(msg: 'No more data');
+        // }
+      }
     });
   }
 
@@ -115,6 +132,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         },
       ),
       body: ListView(
+        controller: scrollController,
         padding: const EdgeInsets.all(16.0),
         children: [
           Container(
