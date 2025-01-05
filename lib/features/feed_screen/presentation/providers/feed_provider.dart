@@ -1,15 +1,15 @@
 import 'dart:developer';
 
-import 'package:ezycourse_community/features/feed_screen/data/model/submit_react_req.dart';
-import 'package:ezycourse_community/features/feed_screen/domain/usecases/submit_reac_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../../core/utils/custom_toast.dart';
 import '../../../../core/utils/shared_preference_utils.dart';
 import '../../../authentication/authentication.dart';
+import '../../data/model/submit_react_req.dart';
 import '../../domain/entity/feed_data_entity.dart';
 import '../../domain/usecases/get_feed_usecases.dart';
+import '../../domain/usecases/submit_reac_usecases.dart';
 
 class FeedState {
   final bool isLogOutLoading;

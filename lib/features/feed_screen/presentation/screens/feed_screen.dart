@@ -1,21 +1,20 @@
 import 'dart:developer';
 
-import 'package:ezycourse_community/features/feed_screen/data/model/submit_react_req.dart';
-
-import '../../../../core/utils/app_constant.dart';
+import 'package:ezycourse_community/features/create_post/presentation/screens/create_post_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reaction_button/flutter_reaction_button.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/utils/app_constant.dart';
 import '../../../../core/utils/app_utils.dart';
 import '../../../../core/utils/color_manager.dart';
 import '../../../../core/widgets/custom_network_image.dart';
 import '../../../../core/widgets/dialog_helper.dart';
 import '../../../../core/widgets/logout_dialog_widget.dart';
 import '../../../authentication/presentation/screens/login_screen.dart';
+import '../../data/model/submit_react_req.dart';
 import '../../domain/entity/feed_data_entity.dart';
 import '../providers/feed_provider.dart';
 
@@ -130,34 +129,39 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 color: const Color(0xFF004852).withOpacity(.2),
               ),
             ),
-            child: Row(
-              children: [
-                Image.asset('assets/images/placeholder_img.png'),
-                const Gap(12),
-                const Text(
-                  'Write Something here...',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Color(0xFF98A2B3),
-                    fontSize: 16,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: const Color(0xFF004852),
-                  ),
-                  child: const Text(
-                    'Post',
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (c) => CreatePostScreens()));
+              },
+              child: Row(
+                children: [
+                  Image.asset('assets/images/placeholder_img.png'),
+                  const Gap(12),
+                  const Text(
+                    'Write Something here...',
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFF98A2B3),
+                      fontSize: 16,
                     ),
                   ),
-                )
-              ],
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: const Color(0xFF004852),
+                    ),
+                    child: const Text(
+                      'Post',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           const Gap(16),
@@ -244,19 +248,19 @@ class FeedItemWidget extends StatelessWidget {
         const Gap(8),
         data.isBackground == 1
             ? Container(
-                constraints: const BoxConstraints(minHeight: 200, minWidth: double.infinity),
+                constraints: const BoxConstraints(minHeight: 160, minWidth: double.infinity),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromRGBO(233, 255, 66, 1),
-                      Color.fromRGBO(0, 255, 255, 1),
-                    ],
-                  ),
+                  gradient: AppUtils.getGradiant(data.bgColor ?? ""),
                 ),
                 child: Center(
-                  child: Text(data.feedTxt),
+                  child: Text(
+                    data.feedTxt,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               )
             : Text(data.feedTxt),

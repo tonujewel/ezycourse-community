@@ -5,4 +5,5 @@ class ColorManager {
   static const Color btnColor = Color(0xFFE8F54A);
   static const Color greyColor = Color(0xFF667085);
   static const Color greyDarkColor = Color(0xFF333741);
+  static const Color bgColor = Color(0xFFF3F3F3);
 }

@@ -1,3 +1,4 @@
+import 'package:ezycourse_community/core/utils/app_constant.dart';
 import 'package:flutter/material.dart';
 
 class AppUtils {
@@ -51,5 +52,15 @@ class AppUtils {
     timeAgo += timeValue > 1 ? 's' : '';
 
     return '$timeAgo ago';
+  }
+
+  static LinearGradient getGradiant(String text) {
+    for (var i = 0; i < AppConstant.feedBackGroundGradientColors.length; i++) {
+      if (text == AppConstant.feedBackGroundGradientColors[i]) {
+        return AppConstant.gradientsColor[i + 1];
+      }
+    }
+
+    return AppConstant.gradientsColor[0];
   }
 }

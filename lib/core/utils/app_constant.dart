@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reaction_button/flutter_reaction_button.dart';
 
 class AppConstant {
- static List<Reaction<String>?> reactionList = [
+  static List<Reaction<String>?> reactionList = [
     Reaction<String>(
       value: 'LIKE',
       icon: Image.asset('assets/images/reaction/like.gif'),
@@ -28,39 +28,67 @@ class AppConstant {
       icon: Image.asset('assets/images/reaction/angry.gif'),
     ),
   ];
-}
 
-enum ReactionEmoji {
-  nothing,
-  like,
-  love,
-  haha,
-  wow,
-  sad,
-  angry,
-}
+  static List gradientsColor = const [
+    LinearGradient(
+      begin: Alignment(-1.0, 0.0),
+      end: Alignment(1.0, 0.0),
+      transform: GradientRotation(90),
+      colors: [
+        Color(0xFFFFFFFF),
+        Color(0xFFFFFFFF),
+      ],
+    ),
+    LinearGradient(
+      begin: Alignment(-1.0, 0.0),
+      end: Alignment(1.0, 0.0),
+      transform: GradientRotation(90),
+      colors: [
+        Color(0xFFff00ea),
+        Color(0xFFff7300),
+      ],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      transform: GradientRotation(-135),
+      colors: [
+        Color.fromRGBO(72, 229, 169, 1),
+        Color.fromRGBO(143, 199, 173, 1),
+      ],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color.fromRGBO(116, 167, 126, 1),
+        Color.fromRGBO(24, 175, 78, 1),
+      ],
+    ),
+    LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFFff7f11),
+        Color(0xFFff7f11),
+      ],
+    ),
+    LinearGradient(
+      begin: Alignment(-1.0, 0.0),
+      end: Alignment(1.0, 0.0),
+      transform: GradientRotation(90),
+      colors: [
+        Color(0xFF00ffe1),
+        Color(0xFFe9ff42),
+      ],
+    )
+  ];
 
-class AssetSounds {
-  static const String boxDown = "sound_box_down.mp3";
-  static const String boxUp = "sound_box_up.mp3";
-  static const String focus = "sound_focus.mp3";
-  static const String pick = "sound_pick.mp3";
-  static const String shortPressLike = "sound_short_press_like.mp3";
-}
-
-class AssetImages {
-  static const String loveGif = "assets/images/reaction/love.gif";
-  static const String hahaGif = "assets/images/reaction/haha.gif";
-  static const String likeGif = "assets/images/reaction/like.gif";
-  static const String wowGif = "assets/images/reaction/wow.gif";
-  static const String sadGif = "assets/images/reaction/sad.gif";
-  static const String angryGif = "assets/images/reaction/angry.gif";
-
-  static const String icLikeFill = "assets/images/reaction/ic_like_fill.png";
-  static const String icLike = "assets/images/reaction/ic_like.png";
-  static const String icLove2 = "assets/images/reaction/love2.png";
-  static const String icHaha2 = "assets/images/reaction/haha2.png";
-  static const String icWow2 = "assets/images/reaction/wow2.png";
-  static const String icSad2 = "assets/images/reaction/sad2.png";
-  static const String icAngry2 = "assets/images/reaction/angry2.png";
+  static List feedBackGroundGradientColors = [
+    "{\"backgroundImage\":\"linear-gradient(45deg, rgb(255, 115, 0) 0%, rgb(255, 0, 234) 100%)\"}",
+    "{\"backgroundImage\":\"linear-gradient(135deg, rgb(143, 199, 173), rgb(72, 229, 169))\"}",
+    "{\"backgroundImage\":\"linear-gradient(135deg, rgb(116, 167, 126), rgb(24, 175, 78))\"}",
+    "{\"backgroundImage\":\"linear-gradient(45deg, rgb(255, 127, 17) 0%, rgb(255, 127, 17) 100%)\"}",
+    "{\"backgroundImage\":\"linear-gradient(45deg, rgb(233, 255, 66) 0%, rgb(0, 255, 225) 100%)\"}"
+  ];
 }

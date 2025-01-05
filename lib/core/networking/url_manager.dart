@@ -7,4 +7,5 @@ class UrlManager {
   static String feedUrl = "$_baseUrl2/teacher/community/getFeed?status=feed";
   static String logoutUrl = "$_baseUrl2/student/auth/logout";
   static String createLikeUrl = "$_baseUrl2/teacher/community/createLike";
+  static String createPostUrl = "$_baseUrl2/teacher/community/createFeedWithUpload";
 }
