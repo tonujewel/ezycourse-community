@@ -4,7 +4,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:ezycourse_community/core/utils/shared_preference_utils.dart';
+
+import '../utils/shared_preference_utils.dart';
 
 class DioClient {
   static const int timeoutDuration = 60;
@@ -14,7 +15,7 @@ class DioClient {
   Map<String, dynamic>? header = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${SharedPrefUtil.instance.getBearerToken()}',
+    'Authorization': 'Bearer ${SharedPrefUtil.getBearerToken()}',
   };
 
   //GET
@@ -41,21 +42,31 @@ class DioClient {
 
   //POST
 
-  Future<dynamic> post({required String url, Map<String, dynamic>? params, dynamic body}) async {
-    var payload = json.encode(body);
+  Future<dynamic> post({
+    required String url,
+    Map<String, dynamic>? params,
+    Map<String, dynamic>? body,
+    required Map<String, dynamic>? head,
+  }) async {
+    // var payload = json.encode(body);
     try {
-      var response = await _dio
-          .post(
-            url,
-            options: Options(headers: header),
-            queryParameters: params,
-            data: payload,
-          )
-          .timeout(const Duration(seconds: timeoutDuration));
-      printResponse(url, "${header ?? ""}", "$body", "$response");
-      return jsonEncode(response.data);
+      if (body != null) {
+        var response = await _dio
+            .post(url, options: Options(headers: head), queryParameters: params, data: body)
+            .timeout(const Duration(seconds: timeoutDuration));
+
+        printResponse(url, "${head ?? ""}", "$body", "$response");
+        return jsonEncode(response.data);
+      } else {
+        var response = await _dio
+            .post(url, options: Options(headers: head), queryParameters: params)
+            .timeout(const Duration(seconds: timeoutDuration));
+
+        printResponse(url, "${head ?? ""}", "$body", "$response");
+        return jsonEncode(response.data);
+      }
     } catch (e) {
-      printResponse(url, "${header ?? ""}", jsonEncode(body), "$e");
+      printResponse(url, "${head ?? ""}", jsonEncode(body), "$e");
       rethrow;
     }
   }

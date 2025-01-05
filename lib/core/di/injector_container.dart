@@ -1,3 +1,4 @@
+import 'package:ezycourse_community/features/feed_screen/domain/usecases/submit_reac_usecases.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/authentication/authentication.dart';
@@ -9,7 +10,9 @@ import '../networking/dio_client.dart';
 
 final getIt = GetIt.instance;
 
-Future<void> init() async {
+Future<void> setupDI() async {
+
+
   // DIO CLIENT
   getIt.registerLazySingleton(() => DioClient());
 
@@ -22,6 +25,8 @@ Future<void> init() async {
   getIt.registerLazySingleton<FeedRepository>(() => FeedRepositoryImpl(dataSrc: getIt()));
 
   // USECASES
-  getIt.registerLazySingleton(() => LoginUsecases(repositories: getIt()));
+  getIt.registerLazySingleton(() => LoginUsecases(repository: getIt()));
   getIt.registerLazySingleton(() => GetFeedUsecases(repository: getIt()));
+  getIt.registerLazySingleton(() => LogoutUsecases(repository: getIt()));
+  getIt.registerLazySingleton(() => SubmitReacUsecases(repository: getIt()));
 }

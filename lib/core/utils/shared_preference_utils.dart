@@ -1,34 +1,24 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../main.dart';
 
 class SharedPrefUtil {
-  static final SharedPrefUtil _instance = SharedPrefUtil._internal();
-  SharedPreferences? _preferences;
-
-  SharedPrefUtil._internal();
-
-  static SharedPrefUtil get instance => _instance;
-
-  Future<void> init() async {
-    _preferences = await SharedPreferences.getInstance();
+  static Future<void> storeIsRemember(bool value) async {
+    await preferences?.setBool("IsRemember", value);
   }
 
-  Future<void> storeIsRemember(bool value) async {
-    await _preferences?.setBool("IsRemember", value);
+  static bool getIsRemember() {
+    return preferences?.getBool("IsRemember") ?? false;
   }
 
-  bool getIsRemember() {
-    return _preferences?.getBool("IsRemember") ?? false;
+  static Future<void> storeBearerToken(String value) async {
+    print("TOKEN ${preferences?.setString("BearerToken", value)}");
+    await preferences?.setString("BearerToken", value);
   }
 
-  Future<void> storeBearerToken(String value) async {
-    await _preferences?.setString("BearerToken", value);
+  static String getBearerToken() {
+    return preferences?.getString("BearerToken") ?? "";
   }
 
-  String getBearerToken() {
-    return _preferences?.getString("BearerToken") ?? "";
-  }
-
-  Future<void> clear() async {
-    await _preferences?.clear();
+  static Future<void> clear() async {
+    await preferences?.clear();
   }
 }

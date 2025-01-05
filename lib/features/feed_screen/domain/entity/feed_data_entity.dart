@@ -73,6 +73,13 @@ class FeedDataEntity extends Equatable {
         likeType,
         isUserReacted
       ];
+
+  FileElementEntity? getSingleFile() {
+    if (files.isNotEmpty) {
+      return files.first;
+    }
+    return null;
+  }
 }
 
 class FileElementEntity extends Equatable {

@@ -1,21 +1,33 @@
 import 'dart:developer';
 
+import 'package:ezycourse_community/features/feed_screen/data/model/submit_react_req.dart';
+import 'package:ezycourse_community/features/feed_screen/domain/usecases/submit_reac_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../../core/utils/custom_toast.dart';
+import '../../../../core/utils/shared_preference_utils.dart';
+import '../../../authentication/authentication.dart';
 import '../../domain/entity/feed_data_entity.dart';
 import '../../domain/usecases/get_feed_usecases.dart';
 
 class FeedState {
+  final bool isLogOutLoading;
   final bool isLoading;
   final bool isSuccess;
   final String? error;
   final List<FeedDataEntity> feeds;
 
-  FeedState({this.isLoading = false, this.isSuccess = false, this.error, required this.feeds});
+  FeedState({
+    this.isLogOutLoading = false,
+    this.isLoading = false,
+    this.isSuccess = false,
+    this.error,
+    required this.feeds,
+  });
 
   FeedState copyWith({
+    bool? isLogOutLoading,
     bool? isLoading,
     bool? isSuccess,
     String? error,
@@ -23,6 +35,7 @@ class FeedState {
     List<FeedDataEntity>? feeds,
   }) {
     return FeedState(
+      isLogOutLoading: isLogOutLoading ?? this.isLogOutLoading,
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       error: error ?? this.error,
@@ -33,7 +46,9 @@ class FeedState {
 
 class FeedNotifier extends StateNotifier<FeedState> {
   final GetFeedUsecases feedUsecases;
-  FeedNotifier(this.feedUsecases) : super(FeedState(feeds: []));
+  final LogoutUsecases logoutUsecases;
+  final SubmitReacUsecases submitReacUsecases;
+  FeedNotifier(this.feedUsecases, this.logoutUsecases, this.submitReacUsecases) : super(FeedState(feeds: []));
 
   Future<void> getFeeds() async {
     log("fetching data");
@@ -50,13 +65,62 @@ class FeedNotifier extends StateNotifier<FeedState> {
       },
     );
   }
+
+  Future<void> doLogout() async {
+    state = state.copyWith(isLogOutLoading: true);
+    final response = await logoutUsecases.call();
+
+    response.fold(
+      (l) {
+        state = state.copyWith(isLogOutLoading: false, isSuccess: false, error: l.message);
+        CustomToast.errorToast(message: l.message);
+      },
+      (r) async {
+        CustomToast.successToast(message: r.msg);
+        await SharedPrefUtil.clear();
+        state = state.copyWith(isLogOutLoading: false);
+      },
+    );
+  }
+
+  Future<void> submitReact(SubmitReactReq req) async {
+    final response = await submitReacUsecases.call(req);
+
+    response.fold(
+      (l) {
+        state = state.copyWith(isLogOutLoading: false, isSuccess: false, error: l.message);
+        CustomToast.errorToast(message: l.message);
+      },
+      (r) async {
+        // CustomToast.successToast(message: r.msg);
+        // await SharedPrefUtil.clear();
+        // state = state.copyWith(isLogOutLoading: false);
+        log("sucess");
+        await getFeeds();
+      },
+    );
+  }
+
+  void resetState() {
+    state = FeedState(feeds: []);
+  }
 }
 
 final feedProvider = StateNotifierProvider<FeedNotifier, FeedState>((ref) {
   final feedUsecase = ref.watch(feedUsecaseProvider);
-  return FeedNotifier(feedUsecase);
+  final logoutUsecase = ref.watch(logoutUseCaseProvider);
+  final submitReactUseCase = ref.watch(submitReactUseCaseProvider);
+  return FeedNotifier(feedUsecase, logoutUsecase, submitReactUseCase);
 });
 
 final feedUsecaseProvider = Provider<GetFeedUsecases>((ref) {
   return GetIt.instance<GetFeedUsecases>();
+});
+
+final logoutUseCaseProvider = Provider<LogoutUsecases>((ref) {
+  return GetIt.instance<LogoutUsecases>();
+});
+
+final submitReactUseCaseProvider = Provider<SubmitReacUsecases>((ref) {
+  return GetIt.instance<SubmitReacUsecases>();
 });

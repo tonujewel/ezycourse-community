@@ -1,13 +1,23 @@
-import 'package:ezycourse_community/core/utils/app_utils.dart';
-import 'package:ezycourse_community/core/widgets/custom_network_image.dart';
-import 'package:ezycourse_community/features/feed_screen/domain/entity/feed_data_entity.dart';
+import 'dart:developer';
 
-import '../../../../core/utils/color_manager.dart';
-import '../providers/feed_provider.dart';
+import 'package:ezycourse_community/features/feed_screen/data/model/submit_react_req.dart';
+
+import '../../../../core/utils/app_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_reaction_button/flutter_reaction_button.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+
+import '../../../../core/utils/app_utils.dart';
+import '../../../../core/utils/color_manager.dart';
+import '../../../../core/widgets/custom_network_image.dart';
+import '../../../../core/widgets/dialog_helper.dart';
+import '../../../../core/widgets/logout_dialog_widget.dart';
+import '../../../authentication/presentation/screens/login_screen.dart';
+import '../../domain/entity/feed_data_entity.dart';
+import '../providers/feed_provider.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -28,6 +38,25 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(feedProvider);
+
+    ref.listen<FeedState>(feedProvider, (FeedState? previous, FeedState next) {
+      log("${previous?.isLogOutLoading}  ${next.isLogOutLoading == true}");
+
+      if (previous?.isLogOutLoading == false && next.isLogOutLoading == true) {
+        DialogHelper.showLoading(context);
+      }
+
+      if (previous?.isLogOutLoading == true && next.isLogOutLoading == false) {
+        DialogHelper.hideLoading(context);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (c) => const LoginScreen()),
+          (route) => false,
+        );
+
+        ref.read(feedProvider.notifier).resetState();
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -72,9 +101,22 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         unselectedLabelStyle: const TextStyle(
           color: Color(0xFF101828),
           fontWeight: FontWeight.w700,
-          height: 1,
         ),
-        onTap: (int index) {},
+        onTap: (int index) {
+          if (index == 1) {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return LogoutDialogWidget(
+                  yesOnTap: () {
+                    ref.read(feedProvider.notifier).doLogout();
+                  },
+                );
+              },
+            );
+          }
+        },
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -97,7 +139,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Color(0xFF98A2B3),
-                    fontSize: 17,
+                    fontSize: 16,
                   ),
                 ),
                 const Spacer(),
@@ -124,21 +166,36 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return FeeItemWidget(
+              return FeedItemWidget(
                 data: state.feeds[index],
+                onReactTap: (String text) {
+                  //
+
+                  SubmitReactReq req = SubmitReactReq(
+                    feedId: state.feeds[index].id,
+                    action: "deleteOrCreate",
+                    reactionSource: "COMMUNITY",
+                    reactionType: text,
+                  );
+
+                  ref.read(feedProvider.notifier).submitReact(req);
+                },
               );
             },
-          )
+          ),
+          state.isLoading ? const Center(child: CircularProgressIndicator()) : const SizedBox()
         ],
       ),
     );
   }
 }
 
-class FeeItemWidget extends StatelessWidget {
-  const FeeItemWidget({super.key, required this.data});
+class FeedItemWidget extends StatelessWidget {
+  const FeedItemWidget({super.key, required this.data, required this.onReactTap});
 
   final FeedDataEntity data;
+
+  final Function(String text) onReactTap;
 
   @override
   Widget build(BuildContext context) {
@@ -185,11 +242,32 @@ class FeeItemWidget extends StatelessWidget {
         ),
         const Divider(),
         const Gap(8),
-        Text(
-          data.feedTxt,
-        ),
+        data.isBackground == 1
+            ? Container(
+                constraints: const BoxConstraints(minHeight: 200, minWidth: double.infinity),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color.fromRGBO(233, 255, 66, 1),
+                      Color.fromRGBO(0, 255, 255, 1),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: Text(data.feedTxt),
+                ),
+              )
+            : Text(data.feedTxt),
         const Gap(16),
-        Image.asset('assets/images/demo_image.png'),
+        if (data.getSingleFile() != null && data.fileType == "photos")
+          CustomNetworkImage(
+            width: double.infinity,
+            borderRadius: 10,
+            imageUrl: data.getSingleFile()?.fileLoc ?? "",
+            fit: BoxFit.cover,
+          ),
         const Gap(12),
         Row(
           children: [
@@ -201,8 +279,15 @@ class FeeItemWidget extends StatelessWidget {
                         widthFactor: .7,
                         alignment: Alignment.centerLeft,
                         child: Container(
-                            decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                            child: Image.asset(dd.getStatusImg())),
+                          padding: const EdgeInsets.all(2),
+                          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                          child: Image.asset(
+                            dd.getStatusImg(),
+                            height: 16,
+                            width: 16,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     )
                     .toList(),
@@ -228,9 +313,22 @@ class FeeItemWidget extends StatelessWidget {
         const Gap(16),
         Row(
           children: [
-            Image.asset(
-              'assets/images/like_fill.png',
-              color: data.isUserReacted ? const Color(0xFF6662FF) : ColorManager.greyColor,
+            SizedBox.square(
+              dimension: 30,
+              child: ReactionButton(
+                toggle: false,
+                direction: ReactionsBoxAlignment.ltr,
+                onReactionChanged: (Reaction<String>? reaction) {
+                  onReactTap(reaction?.value ?? "");
+                },
+                reactions: AppConstant.reactionList,
+                boxColor: Colors.white,
+                boxRadius: 30,
+                itemsSpacing: 16,
+                itemSize: const Size(40, 40),
+                boxPadding: const EdgeInsets.all(14),
+                child: Image.asset('assets/images/like_fill.png'),
+              ),
             ),
             const Gap(4),
             Expanded(

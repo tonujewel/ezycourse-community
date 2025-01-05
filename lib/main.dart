@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/di/injector_container.dart';
 import 'core/utils/color_manager.dart';
-import 'core/utils/shared_preference_utils.dart';
 import 'features/splash/screen/splash_screen.dart';
+
+SharedPreferences? preferences;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefUtil.instance.init();
-  await init();
+  preferences = await SharedPreferences.getInstance();
+  await setupDI();
 
   runApp(const ProviderScope(child: MyApp()));
 }

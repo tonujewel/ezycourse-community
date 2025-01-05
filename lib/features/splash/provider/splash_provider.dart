@@ -9,7 +9,7 @@ splashProvider(BuildContext context) => FutureProvider(
       (ref) async {
         await Future.delayed(const Duration(seconds: 2));
 
-        if (SharedPrefUtil.instance.getIsRemember() && SharedPrefUtil.instance.getBearerToken() != "") {
+        if (SharedPrefUtil.getIsRemember() && SharedPrefUtil.getBearerToken() != "") {
           // ignore: use_build_context_synchronously
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FeedScreen()));
         } else {

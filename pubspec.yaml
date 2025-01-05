@@ -24,6 +24,7 @@ dependencies:
   shared_preferences: ^2.3.5
   flutter_svg: ^2.0.16
   cached_network_image: ^3.4.1
+  flutter_reaction_button: ^3.0.0+3
 
 dev_dependencies:
   flutter_test:
@@ -38,6 +39,7 @@ flutter:
   # ASSETS
   assets:
     - assets/
+    - assets/images/reaction/
     - assets/images/
     - assets/fonts/
     - assets/svgs/

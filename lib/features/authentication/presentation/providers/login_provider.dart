@@ -1,6 +1,8 @@
+import 'package:ezycourse_community/core/di/injector_container.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../../core/networking/dio_client.dart';
 import '../../../../core/utils/app_utils.dart';
 import '../../../../core/utils/custom_toast.dart';
 import '../../../../core/utils/shared_preference_utils.dart';
@@ -47,13 +49,24 @@ class LoginNotifier extends StateNotifier<LoginState> {
         state = state.copyWith(isLoading: false, isSuccess: false, error: l.message);
         CustomToast.errorToast(message: l.message);
       },
-      (r) {
+      (r) async {
         CustomToast.successToast(message: "Login Success");
+
+        // await Future.delayed(const Duration(seconds: 30));
+
+        await SharedPrefUtil.storeIsRemember(state.isRemember);
+        await SharedPrefUtil.storeBearerToken(r.token);
+
+        // getIt.unregister<DioClient>();
+        // getIt.registerLazySingleton(() => DioClient());
+
         state = state.copyWith(isLoading: false, isSuccess: true);
-        SharedPrefUtil.instance.storeIsRemember(state.isRemember);
-        SharedPrefUtil.instance.storeBearerToken(r.token);
       },
     );
+  }
+
+  void resetState() {
+    state = LoginState();
   }
 
   bool loginValidation(LoginRequest request) {
