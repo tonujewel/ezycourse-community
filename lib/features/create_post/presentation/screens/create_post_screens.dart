@@ -43,7 +43,6 @@ class CreatePostScreens extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
           icon: const Text(
             'Close',
-            textAlign: TextAlign.left,
             style: TextStyle(
               color: Color.fromRGBO(21, 25, 55, 1),
               fontFamily: 'Figtree',
@@ -52,7 +51,6 @@ class CreatePostScreens extends ConsumerWidget {
         ),
         title: const Text(
           'Create Post',
-          textAlign: TextAlign.left,
           style: TextStyle(
             color: Color.fromRGBO(0, 0, 0, 1),
             fontFamily: 'Figtree',
@@ -84,7 +82,6 @@ class CreatePostScreens extends ConsumerWidget {
             },
             child: const Text(
               'Create',
-              textAlign: TextAlign.left,
               style: TextStyle(
                 color: Color.fromRGBO(102, 98, 255, 1),
                 fontFamily: 'Figtree',

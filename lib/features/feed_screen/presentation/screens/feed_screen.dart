@@ -58,6 +58,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     });
 
     return Scaffold(
+      backgroundColor: ColorManager.bgColor,
       appBar: AppBar(
         backgroundColor: const Color(0xFF115C67),
         leading: IconButton(
@@ -139,7 +140,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   const Gap(12),
                   const Text(
                     'Write Something here...',
-                    textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Color(0xFF98A2B3),
                       fontSize: 16,
@@ -154,7 +154,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     ),
                     child: const Text(
                       'Post',
-                      textAlign: TextAlign.left,
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -220,7 +219,6 @@ class FeedItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     data.name,
-                    textAlign: TextAlign.left,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16,
@@ -228,7 +226,6 @@ class FeedItemWidget extends StatelessWidget {
                   ),
                   Text(
                     AppUtils.displayTimeAgoFromTimestamp(data.createdAt.toString()),
-                    textAlign: TextAlign.left,
                     style: const TextStyle(
                       color: ColorManager.greyColor,
                       fontSize: 14,
@@ -345,19 +342,269 @@ class FeedItemWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Image.asset('assets/images/comments_fill.png'),
-            const Gap(4),
-            const Text(
-              'Comment',
-              style: TextStyle(
-                color: Color(0xFF1B1B35),
-                fontWeight: FontWeight.w700,
+            InkWell(
+              onTap: () {
+                showModalBottomSheet<void>(
+                  backgroundColor: Colors.white,
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const CommentsBottomSheet();
+                  },
+                );
+              },
+              child: Row(
+                children: [
+                  Image.asset('assets/images/comments_fill.png'),
+                  const Gap(4),
+                  const Text(
+                    'Comment',
+                    style: TextStyle(
+                      color: Color(0xFF1B1B35),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
             )
           ],
         ),
         const Gap(32)
       ],
+    );
+  }
+}
+
+class CommentsBottomSheet extends StatelessWidget {
+  const CommentsBottomSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(14),
+          topRight: Radius.circular(14),
+        ),
+      ),
+      height: MediaQuery.of(context).size.height * .8,
+      child: Column(
+        children: [
+          const Row(
+            children: [Text("You and 2 other")],
+          ),
+          const Gap(16),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                return const CommentsItemWidget();
+              },
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: const Color(0xFFF0F2F5),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        const Gap(12),
+                        ClipOval(
+                          child: Image.asset(
+                            'assets/images/placeholder_img.png',
+                            height: 40,
+                            width: 40,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const Gap(12),
+                        const Text(
+                          'Write a Comment',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xFF98A2B3),
+                            fontFamily: 'Figtree',
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 60,
+                  padding: const EdgeInsets.all(12),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF004852),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Center(child: SvgPicture.asset('assets/svgs/sent.svg')),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CommentsItemWidget extends StatelessWidget {
+  const CommentsItemWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipOval(
+            child: Image.asset(
+              'assets/images/placeholder_img.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          const Gap(12),
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F2F5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'IAP Testing',
+                              style: TextStyle(fontFamily: 'Figtree', fontSize: 16, fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                              '4 cup tcake',
+                              style: TextStyle(
+                                fontFamily: 'Figtree',
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.more_horiz_outlined)
+                    ],
+                  ),
+                ),
+                const Gap(8),
+                Row(
+                  children: [
+                    const Gap(16),
+                    const Text(
+                      "Like",
+                      style: TextStyle(color: Color(0xFF6662FF)),
+                    ),
+                    const Gap(16),
+                    const Text("Reply"),
+                    const Gap(8),
+                    const Spacer(),
+                    const Text(
+                      "1",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const Gap(8),
+                    Image.asset('assets/images/like.png')
+                  ],
+                ),
+                const Gap(12),
+                ListView.builder(
+                    itemCount: 2,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return const ReplyItemWidget();
+                    })
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class ReplyItemWidget extends StatelessWidget {
+  const ReplyItemWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipOval(
+            child: Image.asset(
+              'assets/images/placeholder_img.png',
+              height: 40,
+              width: 40,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const Gap(12),
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F2F5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'IAP Testing',
+                              style: TextStyle(fontFamily: 'Figtree', fontSize: 16, fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                              '4 cup tcake',
+                              style: TextStyle(
+                                fontFamily: 'Figtree',
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.more_horiz_outlined)
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:ezycourse_community/core/utils/app_constant.dart';
-import 'package:flutter/material.dart';
+
 
 class FeedDataEntity extends Equatable {
   final int id;
